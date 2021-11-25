@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SearchScreen from '../Screens/Search';
-import TvScreen from '../Screens/Tv';
 import MoviesScreen from '../Screens/Movies';
+import TvScreen from '../Screens/Tv';
+import SearchScreen from '../Screens/Search';
 
 import { useColorScheme } from 'react-native';
 import { BLACK_COLOR, BLUE_COLOR, GRAY_COLOR, RED_COLOR } from '../styles/Color';
@@ -31,7 +31,7 @@ export default function Tabs() {
         name="Movies"
         component={MoviesScreen}
         options={{
-          tabBarIcon: ({ focused, color }) => {
+          tabBarIcon: ({ color }) => {
             return <Ionicons name="film-outline" size={24} color={color} />;
           },
         }}
@@ -40,7 +40,7 @@ export default function Tabs() {
         name="TV"
         component={TvScreen}
         options={{
-          tabBarIcon: ({ focused, color }) => {
+          tabBarIcon: ({ color }) => {
             return <Ionicons name="tv-outline" size={24} color={color} />;
           },
         }}
