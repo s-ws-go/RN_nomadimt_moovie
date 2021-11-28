@@ -28,8 +28,7 @@ export default function App() {
   const onFinish = () => setReady(true);
   const startLoading = async () => {
     const fonts = loadingFonts([Ionicons.font]);
-    const images = loadingImages([require('./images/mypic.jpeg'), 'https://reactnative.dev/img/header_logo.svg']);
-    await Promise.all([...fonts, ...images]);
+    await Promise.all([...fonts]);
   };
   const isDark = useColorScheme() === 'dark';
   if (!ready) {
