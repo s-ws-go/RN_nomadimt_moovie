@@ -7,12 +7,14 @@ import { MakingIgmPath } from '../utils';
 import { BlurView } from 'expo-blur';
 import { Text } from 'react-native-paper';
 
-const API_KEY = 'f9fd7b5b380b16d49bec3a9239f19ac0';
+const API_KEY = '10923b261ba94d897ac6b81148314a3f';
 
 const Container = styled.ScrollView``;
 
-const View = styled.View`
+const Loader = styled.View`
   flex: 1;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Loader = styled.View`
@@ -57,4 +59,4 @@ const MoviesScreen: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
   );
 };
 
-export default MoviesScreen;
+export default Movies;
