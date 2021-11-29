@@ -15,21 +15,21 @@ import Root from './Navigations/Root';
 
 // 폰트, 이미지를 여러개 적용하고 싶어! : 배열 활용
 const loadingFonts = (fonts) => fonts.map((font) => Font.loadAsync(font));
-const loadingImages = (images) =>
-  images.map((image) => {
-    if (typeof image === 'string') {
-      return Image.prefetch(image);
-    } else {
-      return Asset.loadAsync(image);
-    }
-  });
+// const loadingImages = (images) =>
+//   images.map((image) => {
+//     if (typeof image === 'string') {
+//       return Image.prefetch(image);
+//     } else {
+//       return Asset.loadAsync(image);
+//     }
+//   });
 export default function App() {
   const [ready, setReady] = useState(false);
   const onFinish = () => setReady(true);
   const startLoading = async () => {
     const fonts = loadingFonts([Ionicons.font]);
-    const images = loadingImages([require('./images/mypic.jpeg'), 'https://reactnative.dev/img/header_logo.svg']);
-    await Promise.all([...fonts, ...images]);
+    // const images = loadingImages([require('./images/mypic.jpeg'), 'https://reactnative.dev/img/header_logo.svg']);
+    await Promise.all([...fonts]);
   };
   const isDark = useColorScheme() === 'dark';
   if (!ready) {
