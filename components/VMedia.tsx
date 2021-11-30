@@ -5,13 +5,14 @@ import Votes from './Votes';
 
 const Movie = styled.View`
   align-items: center;
+  justify-content: center;
+  padding-left: 15px;
 `;
-
-const Title = styled.Text`
-  color: white;
-  font-weight: 600;
-  margin-top: 7px;
-  margin-bottom: 5px;
+const TrendingTitle = styled.Text`
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  margin-top: 5px;
+  font-size: 13px;
 `;
 
 interface VMediaProps {
@@ -23,11 +24,11 @@ interface VMediaProps {
 const VMedia: React.FC<VMediaProps> = ({ posterPath, originalTitle, voteAverage }) => (
   <Movie>
     <Poster path={posterPath} />
-    <Title>
-      {originalTitle.slice(0, 12)}
-      {originalTitle.length > 12 ? '...' : null}
-    </Title>
-    <Votes votes={voteAverage} />
+    <TrendingTitle>
+      {originalTitle.slice(0, 10)}
+      {originalTitle.length > 10 ? '...' : null}
+    </TrendingTitle>
+    <Votes votes={voteAverage}></Votes>
   </Movie>
 );
 

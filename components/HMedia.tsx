@@ -3,35 +3,25 @@ import styled from 'styled-components/native';
 import Poster from './Poster';
 import Votes from './Votes';
 
-const HMovie = styled.View`
-  padding: 0px 30px;
+const HMovies = styled.View`
   flex-direction: row;
-`;
-
-const HColumn = styled.View`
+  margin-bottom: 20px;
   margin-left: 15px;
-  width: 80%;
 `;
-
-const Overview = styled.Text`
-  color: white;
-  opacity: 0.8;
-  width: 80%;
+const HColumn = styled.View`
+  width: 60%;
+  margin-left: 15px;
 `;
-
-const Release = styled.Text`
-  color: white;
-  font-size: 12px;
-  margin-vertical: 10px;
-  font-weight: 500;
-  opacity: 0.6;
-`;
-
-const Title = styled.Text`
+const HTitle = styled.Text`
+  margin-bottom: 15px;
   color: white;
   font-weight: 600;
-  margin-top: 7px;
 `;
+const Release = styled.Text`
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 15px;
+`;
+const HOverview = styled(Release)``;
 
 interface HMediaProps {
   posterPath: string;
@@ -43,23 +33,15 @@ interface HMediaProps {
 
 const HMedia: React.FC<HMediaProps> = ({ posterPath, originalTitle, overview, releaseDate, voteAverage }) => {
   return (
-    <HMovie>
+    <HMovies>
       <Poster path={posterPath} />
       <HColumn>
-        <Title>{originalTitle.length > 30 ? `${originalTitle.slice(0, 30)}...` : originalTitle}</Title>
-        {releaseDate ? (
-          <Release>
-            {new Date(releaseDate).toLocaleDateString('ko', {
-              month: 'long',
-              day: 'numeric',
-              year: 'numeric',
-            })}
-          </Release>
-        ) : null}
+        <HTitle>{originalTitle.length < 30 ? originalTitle : `${originalTitle.slice(0, 30)}...`}</HTitle>
+        {releaseDate ? <Release>{new Date(releaseDate).toLocaleDateString('ko', { month: 'long', year: 'numeric', day: 'numeric' })}</Release> : null}
         {voteAverage ? <Votes votes={voteAverage} /> : null}
-        <Overview>{overview !== '' && overview.length > 140 ? `${overview.slice(0, 140)}...` : overview}</Overview>
+        <HOverview>{`${overview.slice(0, 150)}...`}</HOverview>
       </HColumn>
-    </HMovie>
+    </HMovies>
   );
 };
 

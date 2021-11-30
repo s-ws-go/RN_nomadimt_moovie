@@ -6,6 +6,8 @@ import { ActivityIndicator, Dimensions, Image, RefreshControl, ScrollView, Style
 import Slide from '../components/Slide';
 import Poster from '../components/Poster';
 import Votes from '../components/Votes';
+import VMedia from '../components/VMedia';
+import HMedia from '../components/HMedia';
 
 const API_KEY = '10923b261ba94d897ac6b81148314a3f';
 
@@ -17,55 +19,21 @@ const Loader = styled.View`
   align-items: center;
 `;
 
-const View = styled.View`
-  flex: 1;
-`;
-
 const TrendingContainer = styled.View`
   margin-top: 15px;
   margin-bottom: 15px;
 `;
-const Movie = styled.View`
-  align-items: center;
-  justify-content: center;
-  padding-left: 15px;
-`;
+
 const Title = styled.Text`
   color: white;
   font-size: 15px;
   font-weight: 600;
   margin: 15px 0px 15px 15px;
 `;
-const TrendingTitle = styled.Text`
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
-  margin-top: 5px;
-  font-size: 13px;
-`;
 
 const UpContainer = styled.View`
   margin-top: 10px;
 `;
-
-const UpcomingList = styled.View`
-  flex-direction: row;
-  margin-bottom: 20px;
-  margin-left: 15px;
-`;
-const UpColumn = styled.View`
-  width: 60%;
-  margin-left: 15px;
-`;
-const Uptitle = styled.Text`
-  margin-bottom: 15px;
-  color: white;
-  font-weight: 600;
-`;
-const Uprelease = styled.Text`
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 15px;
-`;
-const UpcomingOverview = styled(Uprelease)``;
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -132,14 +100,7 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
         <Title>Trending Movies</Title>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {trending.map((movie) => (
-            <Movie key={movie.id}>
-              <Poster path={movie.poster_path} />
-              <TrendingTitle>
-                {movie.original_title.slice(0, 10)}
-                {movie.original_title.length > 10 ? '...' : null}
-              </TrendingTitle>
-              <Votes votes={movie.vote_average}></Votes>
-            </Movie>
+            <VMedia key={movie.id} posterPath={movie.poster_path} originalTitle={movie.original_title} voteAverage={movie.vote_average} />
           ))}
         </ScrollView>
       </TrendingContainer>
@@ -147,14 +108,14 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
         <Title>Upcoming Movies</Title>
         <ScrollView>
           {upcoming.map((movie) => (
-            <UpcomingList key={movie.id}>
-              <Poster path={movie.poster_path} />
-              <UpColumn>
-                <Uptitle>{movie.original_title}</Uptitle>
-                <Uprelease>{new Date(movie.release_date).toLocaleDateString('ko', { month: 'long', year: 'numeric', day: 'numeric' })}</Uprelease>
-                <UpcomingOverview>{`${movie.overview.slice(0, 150)}...`}</UpcomingOverview>
-              </UpColumn>
-            </UpcomingList>
+            <HMedia
+              key={movie.id}
+              posterPath={movie.poster_path}
+              originalTitle={movie.original_title}
+              overview={movie.overview}
+              releaseDate={movie.release_date}
+              voteAverage={movie.vote_average}
+            />
           ))}
         </ScrollView>
       </UpContainer>
