@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ActivityIndicator, Dimensions, Image, StyleSheet } from 'react-native';
 import { MakingIgmPath } from '../utils';
 import { BlurView } from 'expo-blur';
-import Votes from '../components/Votes';
+import Slide from '../components/Slide';
 
 const API_KEY = '10923b261ba94d897ac6b81148314a3f';
 
@@ -50,14 +50,31 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
   const [loading, setLoading] = useState(true);
   const [playingMovie, setPlayingMovie] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [trending, setTrending] = useState([]);
   const getNowPlaying = async () => {
     const response = await fetch(`https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`);
     const { results } = await response.json();
     setPlayingMovie(results);
     setLoading(false);
   };
+  const getUpComing = async () => {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`);
+    const { results } = await response.json();
+    setUpcoming(results);
+    setLoading(false);
+  };
+  const getTrending = async () => {
+    const response = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`);
+    const { results } = await response.json();
+    setTrending(results);
+  };
+  const getData = async () => {
+    await Promise.all([getNowPlaying(), getUpComing(), getTrending()]);
+    setLoading(false);
+  };
   useEffect(() => {
-    getNowPlaying();
+    getData();
   }, []);
   return loading ? (
     <Loader>
@@ -75,21 +92,14 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
         containerStyle={{ width: '100%', height: SCREEN_HEIGHT / 4 }}
       >
         {playingMovie.map((movie) => (
-          <View key={movie.id}>
-            <BgImg source={{ uri: MakingIgmPath(movie.backdrop_path) }} style={StyleSheet.absoluteFill} />
-            <BlurView intensity={60} style={StyleSheet.absoluteFill}>
-              <ContentsContainer>
-                <Wrapper>
-                  <Title>{movie.title}</Title>
-                  <Poster source={{ uri: MakingIgmPath(movie.poster_path) }}></Poster>
-                </Wrapper>
-                <Wrapper>
-                  <Contents>{`${movie.overview.slice(0, 100)}...`}</Contents>
-                  <Votes votes={movie.vote_average}></Votes>
-                </Wrapper>
-              </ContentsContainer>
-            </BlurView>
-          </View>
+          <Slide
+            key={movie.id}
+            backdropPath={movie.backdrop_path}
+            posterPath={movie.poster_path}
+            originalTitle={movie.original_title}
+            voteAverage={movie.vote_average}
+            overview={movie.overview}
+          />
         ))}
       </Swiper>
     </Container>
