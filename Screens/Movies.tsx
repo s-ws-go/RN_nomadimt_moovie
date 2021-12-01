@@ -6,10 +6,8 @@ import { ActivityIndicator, Dimensions, FlatList, RefreshControl, View } from 'r
 import Slide from '../components/Slide';
 import VMedia from '../components/VMedia';
 import HMedia from '../components/HMedia';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { MoviesAPI } from '../api';
-
-// const API_KEY = '10923b261ba94d897ac6b81148314a3f';
 
 const Loader = styled.View`
   flex: 1;
@@ -40,17 +38,15 @@ const Seperator = styled.View`
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
-  const [refreshing, setRefreshing] = useState(false);
-  const { isLoading: playingLoading, data: playingData } = useQuery('Playing', MoviesAPI.nowPlaying);
-  const { isLoading: trendingLoading, data: trendingData } = useQuery('Playing', MoviesAPI.trending);
-  const { isLoading: upcomingLoading, data: upcomingData } = useQuery('Playing', MoviesAPI.upcoming);
+  const queryClient = useQueryClient();
+  const { isLoading: playingLoading, data: playingData, isRefetching: playingRefetching } = useQuery(['Movies', 'Playing'], MoviesAPI.nowPlaying);
+  const { isLoading: trendingLoading, data: trendingData, isRefetching: trendingRefetching } = useQuery(['Movies', 'Trending'], MoviesAPI.trending);
+  const { isLoading: upcomingLoading, data: upcomingData, isRefetching: upcomingRefetching } = useQuery(['Movies', 'Upcoming'], MoviesAPI.upcoming);
 
   const loading = playingLoading || upcomingLoading || trendingLoading;
-
+  const refreshing = playingRefetching || trendingRefetching || upcomingRefetching;
   const onRefresh = async () => {
-    // setRefreshing(true);
-    // await getData();
-    // setRefreshing(false);
+    queryClient.refetchQueries(['Movies']);
   };
   return loading ? (
     <Loader>
