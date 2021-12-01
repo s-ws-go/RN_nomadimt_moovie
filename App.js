@@ -13,6 +13,10 @@ import { ThemeProvider } from 'styled-components/native';
 import { SdarkTheme, SlightTheme } from './styled';
 import Root from './Navigations/Root';
 
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
+
 // 폰트, 이미지를 여러개 적용하고 싶어! : 배열 활용
 const loadingFonts = (fonts) => fonts.map((font) => Font.loadAsync(font));
 // const loadingImages = (images) =>
@@ -36,11 +40,13 @@ export default function App() {
     return <AppLoading startAsync={startLoading} onFinish={onFinish} onError={console.error} />;
   }
   return (
-    <ThemeProvider theme={isDark ? SdarkTheme : SlightTheme}>
-      <NavigationContainer>
-        <Root />
-      </NavigationContainer>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={isDark ? SdarkTheme : SlightTheme}>
+        <NavigationContainer>
+          <Root />
+        </NavigationContainer>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

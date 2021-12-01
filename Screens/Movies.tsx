@@ -6,8 +6,10 @@ import { ActivityIndicator, Dimensions, FlatList, RefreshControl, View } from 'r
 import Slide from '../components/Slide';
 import VMedia from '../components/VMedia';
 import HMedia from '../components/HMedia';
+import { useQuery } from 'react-query';
+import { MoviesAPI } from '../api';
 
-const API_KEY = '10923b261ba94d897ac6b81148314a3f';
+// const API_KEY = '10923b261ba94d897ac6b81148314a3f';
 
 const Loader = styled.View`
   flex: 1;
@@ -39,36 +41,16 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [playingMovie, setPlayingMovie] = useState([]);
-  const [upcoming, setUpcoming] = useState([]);
-  const [trending, setTrending] = useState([]);
-  const getNowPlaying = async () => {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`);
-    const { results } = await response.json();
-    setPlayingMovie(results);
-  };
-  const getUpComing = async () => {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`);
-    const { results } = await response.json();
-    setUpcoming(results);
-  };
-  const getTrending = async () => {
-    const response = await fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`);
-    const { results } = await response.json();
-    setTrending(results);
-  };
-  const getData = async () => {
-    await Promise.all([getNowPlaying(), getUpComing(), getTrending()]);
-    setLoading(false);
-  };
-  useEffect(() => {
-    getData();
-  }, []);
+  const { isLoading: playingLoading, data: playingData } = useQuery('Playing', MoviesAPI.nowPlaying);
+  const { isLoading: trendingLoading, data: trendingData } = useQuery('Playing', MoviesAPI.trending);
+  const { isLoading: upcomingLoading, data: upcomingData } = useQuery('Playing', MoviesAPI.upcoming);
+
+  const loading = playingLoading || upcomingLoading || trendingLoading;
+
   const onRefresh = async () => {
-    setRefreshing(true);
-    await getData();
-    setRefreshing(false);
+    // setRefreshing(true);
+    // await getData();
+    // setRefreshing(false);
   };
   return loading ? (
     <Loader>
@@ -87,7 +69,7 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
             showsPagination={false}
             containerStyle={{ width: '100%', height: SCREEN_HEIGHT / 4 }}
           >
-            {playingMovie.map((movie) => (
+            {playingData.results.map((movie) => (
               <Slide
                 key={movie.id}
                 backdropPath={movie.backdrop_path}
@@ -101,7 +83,7 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
           <TrendingContainer>
             <TrendingTitle>Trending Movies</TrendingTitle>
             <FlatList
-              data={trending}
+              data={trendingData.results}
               keyExtractor={(item) => item.id + ''}
               renderItem={({ item }) => (
                 <VMedia key={item.id} posterPath={item.poster_path} originalTitle={item.original_title} voteAverage={item.vote_average} />
@@ -115,7 +97,7 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
         </>
       }
       refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}
-      data={upcoming}
+      data={upcomingData.results}
       keyExtractor={(item) => item.id + ''}
       renderItem={({ item }) => (
         <HMedia
