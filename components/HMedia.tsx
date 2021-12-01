@@ -19,9 +19,11 @@ const HTitle = styled.Text`
 `;
 const Release = styled.Text`
   color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 `;
-const HOverview = styled(Release)``;
+const HOverview = styled(Release)`
+  margin-top: 10px;
+`;
 
 interface HMediaProps {
   posterPath: string;

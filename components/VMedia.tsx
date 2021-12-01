@@ -5,8 +5,6 @@ import Votes from './Votes';
 
 const Movie = styled.View`
   align-items: center;
-  justify-content: center;
-  padding-left: 15px;
 `;
 const TrendingTitle = styled.Text`
   color: rgba(255, 255, 255, 0.8);
