@@ -7,7 +7,7 @@ import Slide from '../components/Slide';
 import VMedia from '../components/VMedia';
 import HMedia from '../components/HMedia';
 import { useQuery, useQueryClient } from 'react-query';
-import { MoviesAPI } from '../api';
+import { MovieResponse, MoviesAPI } from '../api';
 
 const Loader = styled.View`
   flex: 1;
@@ -39,14 +39,25 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
   const queryClient = useQueryClient();
-  const { isLoading: playingLoading, data: playingData, isRefetching: playingRefetching } = useQuery(['Movies', 'Playing'], MoviesAPI.nowPlaying);
-  const { isLoading: trendingLoading, data: trendingData, isRefetching: trendingRefetching } = useQuery(['Movies', 'Trending'], MoviesAPI.trending);
-  const { isLoading: upcomingLoading, data: upcomingData, isRefetching: upcomingRefetching } = useQuery(['Movies', 'Upcoming'], MoviesAPI.upcoming);
-
+  const {
+    isLoading: playingLoading,
+    data: playingData,
+    isRefetching: playingRefetching,
+  } = useQuery<MovieResponse>(['Movies', 'Playing'], MoviesAPI.nowPlaying);
+  const {
+    isLoading: trendingLoading,
+    data: trendingData,
+    isRefetching: trendingRefetching,
+  } = useQuery<MovieResponse>(['Movies', 'Trending'], MoviesAPI.trending);
+  const {
+    isLoading: upcomingLoading,
+    data: upcomingData,
+    isRefetching: upcomingRefetching,
+  } = useQuery<MovieResponse>(['Movies', 'Upcoming'], MoviesAPI.upcoming);
   const loading = playingLoading || upcomingLoading || trendingLoading;
   const refreshing = playingRefetching || trendingRefetching || upcomingRefetching;
   const onRefresh = async () => {
-    queryClient.refetchQueries(['Movies']);
+    await queryClient.refetchQueries(['Movies']);
   };
   return loading ? (
     <Loader>
@@ -65,11 +76,11 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
             showsPagination={false}
             containerStyle={{ width: '100%', height: SCREEN_HEIGHT / 4 }}
           >
-            {playingData.results.map((movie) => (
+            {playingData?.results.map((movie) => (
               <Slide
                 key={movie.id}
-                backdropPath={movie.backdrop_path}
-                posterPath={movie.poster_path}
+                backdropPath={movie.backdrop_path || ''}
+                posterPath={movie.poster_path || ''}
                 originalTitle={movie.original_title}
                 voteAverage={movie.vote_average}
                 overview={movie.overview}
@@ -78,26 +89,28 @@ const Movies: React.FC<NativeStackScreenProps<any, 'Movies'>> = () => {
           </Swiper>
           <TrendingContainer>
             <TrendingTitle>Trending Movies</TrendingTitle>
-            <FlatList
-              data={trendingData.results}
-              keyExtractor={(item) => item.id + ''}
-              renderItem={({ item }) => (
-                <VMedia key={item.id} posterPath={item.poster_path} originalTitle={item.original_title} voteAverage={item.vote_average} />
-              )}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              ItemSeparatorComponent={() => <Seperator />}
-            ></FlatList>
+            {trendingData ? (
+              <FlatList
+                data={trendingData?.results}
+                keyExtractor={(item) => item.id + ''}
+                renderItem={({ item }) => (
+                  <VMedia key={item.id} posterPath={item.poster_path || ''} originalTitle={item.original_title} voteAverage={item.vote_average} />
+                )}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                ItemSeparatorComponent={() => <Seperator />}
+              ></FlatList>
+            ) : null}
           </TrendingContainer>
           <UpcomingTitle>Upcoming Movies</UpcomingTitle>
         </>
       }
       refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}
-      data={upcomingData.results}
+      data={upcomingData?.results}
       keyExtractor={(item) => item.id + ''}
       renderItem={({ item }) => (
         <HMedia
-          posterPath={item.poster_path}
+          posterPath={item.poster_path || ''}
           originalTitle={item.original_title}
           overview={item.overview}
           releaseDate={item.release_date}

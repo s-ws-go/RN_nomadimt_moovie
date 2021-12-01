@@ -17,6 +17,7 @@ export default function Tabs() {
     <Tab.Navigator
       sceneContainerStyle={{ backgroundColor: isDark ? BLACK_COLOR : GRAY_COLOR }}
       screenOptions={{
+        unmountOnBlur: false,
         tabBarStyle: { backgroundColor: isDark ? BLACK_COLOR : GRAY_COLOR },
         tabBarActiveTintColor: isDark ? RED_COLOR : BLUE_COLOR,
         tabBarLabelStyle: { marginTop: -5, fontSize: 10 },
