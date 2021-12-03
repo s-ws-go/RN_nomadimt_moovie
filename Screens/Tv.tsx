@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useQuery, useQueryClient } from 'react-query';
@@ -8,19 +8,17 @@ import { HLIst } from '../components/HLIst';
 import { Loader } from '../components/Loader';
 
 const TvScreen: React.FC<NativeStackScreenProps<any, 'TV'>> = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const queryClient = useQueryClient();
-  const { isLoading: trendingLoading, data: trendingData, isRefetching: trendingRefetching } = useQuery(['Tv', 'trending'], TvAPI.trending);
-  const { isLoading: popularLoading, data: popularData, isRefetching: popularRefetching } = useQuery(['Tv', 'popular'], TvAPI.popular);
-  const {
-    isLoading: airingTodayLoading,
-    data: airingTodayData,
-    isRefetching: airingTodayRefetching,
-  } = useQuery(['Tv', 'airingToday'], TvAPI.airingToday);
+  const { isLoading: trendingLoading, data: trendingData } = useQuery(['Tv', 'trending'], TvAPI.trending);
+  const { isLoading: popularLoading, data: popularData } = useQuery(['Tv', 'popular'], TvAPI.popular);
+  const { isLoading: airingTodayLoading, data: airingTodayData } = useQuery(['Tv', 'airingToday'], TvAPI.airingToday);
   const onRefresh = async () => {
+    setRefreshing(true);
     await queryClient.refetchQueries(['Tv']);
+    setRefreshing(false);
   };
   const loading = trendingLoading || popularLoading || airingTodayLoading;
-  const refreshing = trendingRefetching || popularRefetching || airingTodayRefetching;
   return loading ? (
     <Loader />
   ) : (
