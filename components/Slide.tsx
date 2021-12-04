@@ -1,9 +1,14 @@
+import { useNavigation } from '@react-navigation/native';
 import { BlurView } from 'expo-blur';
 import React from 'react';
-import { StyleSheet, useColorScheme, View } from 'react-native';
+import { StyleSheet, useColorScheme, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import { MakingIgmPath } from '../utils';
 import Poster from './Poster';
+
+const Container = styled.TouchableOpacity`
+  flex: 1;
+`;
 
 const BgImg = styled.Image``;
 
@@ -40,9 +45,13 @@ interface SlideProps {
 }
 
 const Slide: React.FC<SlideProps> = ({ backdropPath, posterPath, originalTitle, voteAverage, overview }) => {
+  const navigation = useNavigation();
+  const goToDetail = () => {
+    navigation.navigate('Stacks', { screen: 'Details', params: { originalTitle } });
+  };
   const isDark = useColorScheme() === 'dark';
   return (
-    <View style={{ flex: 1 }}>
+    <Container onPress={goToDetail}>
       <BgImg style={StyleSheet.absoluteFill} source={{ uri: MakingIgmPath(backdropPath) }} />
       <BlurView tint={isDark ? 'dark' : 'light'} intensity={85} style={StyleSheet.absoluteFill}>
         <Wrapper>
@@ -54,7 +63,7 @@ const Slide: React.FC<SlideProps> = ({ backdropPath, posterPath, originalTitle, 
           </Column>
         </Wrapper>
       </BlurView>
-    </View>
+    </Container>
   );
 };
 
