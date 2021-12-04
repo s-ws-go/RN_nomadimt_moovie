@@ -31,7 +31,12 @@ export const HLIst: React.FC<HlistProps> = ({ data, title }) => {
         showsHorizontalScrollIndicator={false}
         data={data}
         renderItem={({ item }) => (
-          <VMedia posterPath={item.poster_path} originalTitle={item.original_name ?? item.original_title} voteAverage={item.vote_average} />
+          <VMedia
+            posterPath={item.poster_path}
+            originalTitle={item.original_name ?? item.original_title}
+            voteAverage={item.vote_average}
+            fulldata={item}
+          />
         )}
         keyExtractor={(item) => item.id + ''}
         ItemSeparatorComponent={() => <Seperator />}

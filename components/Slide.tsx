@@ -3,6 +3,7 @@ import { BlurView } from 'expo-blur';
 import React from 'react';
 import { StyleSheet, useColorScheme, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
+import { Movie } from '../api';
 import { MakingIgmPath } from '../utils';
 import Poster from './Poster';
 
@@ -42,12 +43,13 @@ interface SlideProps {
   originalTitle: string;
   voteAverage: number;
   overview: string;
+  fulldata: Movie;
 }
 
-const Slide: React.FC<SlideProps> = ({ backdropPath, posterPath, originalTitle, voteAverage, overview }) => {
+const Slide: React.FC<SlideProps> = ({ backdropPath, posterPath, originalTitle, voteAverage, overview, fulldata }) => {
   const navigation = useNavigation();
   const goToDetail = () => {
-    navigation.navigate('Stacks', { screen: 'Details', params: { originalTitle } });
+    navigation.navigate('Stacks', { screen: 'Details', params: { ...fulldata } });
   };
   const isDark = useColorScheme() === 'dark';
   return (
